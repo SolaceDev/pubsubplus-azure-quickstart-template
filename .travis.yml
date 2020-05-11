@@ -27,7 +27,7 @@ script:
   - UNIQUEID="$(date +%s)"
   - TESTRESOURCEGROUPNAME="TravisTestResourceGroup${UNIQUEID}"
   - export ADMINPASSWORD=Travispwd1234!
-  - sed -i "s@ARTIFACTSLOCATION@$Azure/azure-quickstart-templates/master/solace-message-router@g" ci/azuredeploy.parameters.json
+  - sed -i "s@ARTIFACTSLOCATION@Azure/azure-quickstart-templates/master/solace-message-router@g" ci/azuredeploy.parameters.json
   - sed -i "s@UNIQUEID@$UNIQUEID@g" ci/azuredeploy.parameters.json
   - sed -i "s@solace/solace-pubsub-standard:latest@${SOLACE_DOCKER_URL_PARAMETER_VALUE}@g" ci/azuredeploy.parameters.json
   - sed -i "s@ADMINPASSWORD@$ADMINPASSWORD@g" ci/azuredeploy.parameters.json
