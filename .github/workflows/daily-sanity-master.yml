@@ -27,7 +27,7 @@ jobs:
         echo "TESTRESOURCEGROUPNAME=$TESTRESOURCEGROUPNAME" >> $GITHUB_ENV
         echo "TESTDEPLOYMENTNAME=$TESTDEPLOYMENTNAME" >> $GITHUB_ENV
         echo "ADMINPASSWORD=GHAdminpwd1234!" >> $GITHUB_ENV
-        echo "TESTRUNBRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+        echo "TESTRUNBRANCH=master" >> $GITHUB_ENV
         #
         sudo apt-get install jq -y
         sudo apt-get install -y jsonlint
