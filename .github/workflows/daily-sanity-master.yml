@@ -1,17 +1,22 @@
-name: build
+name: daily-sanity-master
 
-# Controls when the action will run. 
 on:
-  pull_request:
-
   push:
+
+  schedule:
+  - cron: "0 5 * * *"
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
     timeout-minutes: 50
 
     steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: master
+
     - name: Set env
       run: |
         echo "AZURELOCATION=centralus" >> $GITHUB_ENV
@@ -26,15 +31,11 @@ jobs:
         #
         sudo apt-get install jq -y
         sudo apt-get install -y jsonlint
-
-    - name: Checkout
-      uses: actions/checkout@v2
-
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-    
+
     - name: Lint json templates
       run: |
         jsonlint-php nestedtemplates/*
@@ -65,3 +66,4 @@ jobs:
       if: ${{ always() }}
       run: |
         az group delete --name $TESTRESOURCEGROUPNAME --yes
+
