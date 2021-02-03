@@ -53,7 +53,7 @@ jobs:
       run: |
         az group create --name $TESTRESOURCEGROUPNAME --location $AZURELOCATION
         echo "Creating publicly exposed cluster and waiting to become active"
-        az group deployment create --name $TESTDEPLOYMENTNAME --resource-group $TESTRESOURCEGROUPNAME --template-file azuredeploy.json --parameters ci/azuredeploy.parameters.json
+        az deployment group create --name $TESTDEPLOYMENTNAME --resource-group $TESTRESOURCEGROUPNAME --template-file azuredeploy.json --parameters ci/azuredeploy.parameters.json
         az group show --name $TESTRESOURCEGROUPNAME | grep provisioningState
         export url=`az network public-ip show --resource-group $TESTRESOURCEGROUPNAME --name myLBPublicIPD --query [ipAddress] --output tsv`; echo $url
         curl -O https://sftp.solace.com/download/SDKPERF_C_LINUX64; tar -xvf SDKPERF_C_LINUX64 -C /tmp; /tmp/pubSubTools/sdkperf_c -cip=$url -mn=100000 -mr=0 -ptl=t1 -stl=t1 | grep "Total Messages"
