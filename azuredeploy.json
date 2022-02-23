@@ -296,8 +296,7 @@
       "2": [ ]
     },
     "adminPasswordDir" : "/mnt/resource/secrets",
-    "adminPasswordFile" : "[concat(variables('adminPasswordDir'),'/solOSpasswd')]",
-    "vmExtension" : "[if(empty(parameters('workspaceName')),'/extensions/DockerExtension','/extensions/OmsAgentExtension')]"
+    "adminPasswordFile" : "[concat(variables('adminPasswordDir'),'/solOSpasswd')]"
   },
   "resources": [
     {
@@ -426,7 +425,7 @@
       "name": "[variables('solaceUpdateSubnetName')]",
       "type": "Microsoft.Resources/deployments",
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments/', variables('solaceSecurityTemplateName'))]"
+        "[concat('Microsoft.Resources/deployments/', variables('solaceSecurityTemplateName'))]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -465,9 +464,9 @@
         "count": "[variables('numberOfInstances')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/publicIPAddresses/', concat(variables('publicIPAddressNameVM'), copyindex()))]",
-        "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-        "[resourceId('Microsoft.Resources/deployments/', variables('solaceLoadBalancerName'))]"
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressNameVM'), copyindex())]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+        "[concat('Microsoft.Resources/deployments/', variables('solaceLoadBalancerName'))]"
       ],
       "properties": {
         "networkSecurityGroup": {
@@ -505,8 +504,8 @@
         "count": "[variables('numberOfInstances')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-        "[resourceId('Microsoft.Resources/deployments/', variables('solaceLoadBalancerName'))]"
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+        "[concat('Microsoft.Resources/deployments/', variables('solaceLoadBalancerName'))]"
       ],
       "properties": {
         "networkSecurityGroup": {
@@ -553,8 +552,8 @@
         "count": "[variables('numberOfInstances')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkInterfaces/', concat(parameters('vmAndLoadbalancerExposure'),variables('nicName'), copyindex()))]",
-        "[resourceId('Microsoft.Compute/availabilitySets/', variables('availabilitySetName'))]"
+        "[concat('Microsoft.Network/networkInterfaces/', concat(parameters('vmAndLoadbalancerExposure'),variables('nicName'), copyindex()))]",
+        "[concat('Microsoft.Compute/availabilitySets/', variables('availabilitySetName'))]"
       ],
       "properties": {
         "availabilitySet": {
@@ -601,7 +600,7 @@
         "count": "[variables('numberOfInstances')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/', concat(parameters('dnsLabelForVmIp'), copyindex()))]"
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelForVmIp'), copyindex())]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
@@ -622,8 +621,8 @@
         "count": "[variables('numberOfInstances')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/', concat(parameters('dnsLabelForVmIp'), copyindex(), '/extensions/DockerExtension'))]",
-        "[resourceId('Microsoft.Resources/deployments/', variables('solaceWorkspaceName'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelForVmIp'), copyindex(), '/extensions/DockerExtension')]",
+        "[concat('Microsoft.Resources/deployments/', variables('solaceWorkspaceName'))]"
       ],
       "properties": {
         "publisher": "Microsoft.EnterpriseCloud.Monitoring",
@@ -647,7 +646,7 @@
         "count": "[variables('numberOfInstances')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/', concat(parameters('dnsLabelForVmIp'), copyindex(), variables('vmExtension')))]"
+        "[if(empty(parameters('workspaceName')), concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelForVmIp'), copyindex(), '/extensions/DockerExtension'), concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelForVmIp'), copyindex(), '/extensions/OmsAgentExtension'))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
