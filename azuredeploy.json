@@ -621,7 +621,7 @@
         "count": "[variables('numberOfInstances')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/', concat(parameters('dnsLabelForVmIp'), copyindex()), '/', 'extensions/', 'DockerExtension')]",
+        "[resourceId('Microsoft.Compute/virtualMachines/', concat(parameters('dnsLabelForVmIp'), copyindex()), 'extensions', 'DockerExtension')]",
         "[resourceId('Microsoft.Resources/deployments/', variables('solaceWorkspaceName'))]"
       ],
       "properties": {
