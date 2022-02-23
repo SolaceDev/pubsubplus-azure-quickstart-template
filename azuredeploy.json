@@ -296,7 +296,8 @@
       "2": [ ]
     },
     "adminPasswordDir" : "/mnt/resource/secrets",
-    "adminPasswordFile" : "[concat(variables('adminPasswordDir'),'/solOSpasswd')]"
+    "adminPasswordFile" : "[concat(variables('adminPasswordDir'),'/solOSpasswd')]",
+    "vmExtension" : "[if(empty(parameters('workspaceName')),'DockerExtension','OmsAgentExtension')]"
   },
   "resources": [
     {
@@ -621,7 +622,7 @@
         "count": "[variables('numberOfInstances')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/', concat(parameters('dnsLabelForVmIp'), copyindex()), 'extensions', 'DockerExtension')]",
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelForVmIp'), copyindex(), '/extensions/DockerExtension')]",
         "[resourceId('Microsoft.Resources/deployments/', variables('solaceWorkspaceName'))]"
       ],
       "properties": {
@@ -646,7 +647,7 @@
         "count": "[variables('numberOfInstances')]"
       },
       "dependsOn": [
-        "[if(empty(parameters('workspaceName')), concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelForVmIp'), copyindex(), '/extensions/DockerExtension'), concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelForVmIp'), copyindex(), '/extensions/OmsAgentExtension'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelForVmIp'), copyindex(), '/extensions/', variables('vmExtension'))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
