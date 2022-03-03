@@ -292,8 +292,7 @@
             "storageAccountType": "StandardSSD_LRS"
           }
         }
-      ],
-      "2": [ ]
+      ]
     },
     "adminPasswordDir" : "/mnt/resource/secrets",
     "adminPasswordFile" : "[concat(variables('adminPasswordDir'),'/solOSpasswd')]",
@@ -580,7 +579,7 @@
             "caching": "ReadWrite",
             "createOption": "FromImage"
           },
-          "dataDisks": "[variables('dataDisksChoices')[if(or(equals(parameters('dataDiskSize'), '0'), equals(copyindex(), variables('monitorNodeIndex'))), '2', string(copyindex()))]]"
+          "dataDisks": "[if( or(equals(parameters('dataDiskSize'), '0'), equals(copyindex(), variables('monitorNodeIndex'))), json('null'), variables('dataDisksChoices')[string(copyindex())] )]"
         },
         "networkProfile": {
           "networkInterfaces": [
