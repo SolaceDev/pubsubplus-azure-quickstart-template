@@ -608,7 +608,7 @@
         "type": "DockerExtension",
         "typeHandlerVersion": "1.0",
         "autoUpgradeMinorVersion": true,
-        "settings": {}
+        "settings": null
       }
     },
     {
