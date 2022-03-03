@@ -623,7 +623,7 @@
         "count": "[variables('numberOfInstances')]"
       },
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelForVmIp'), copyindex(), '/extensions/DockerExtension')]",
+        "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(parameters('dnsLabelForVmIp'), copyindex()), 'DockerExtension')]",
         "[resourceId('Microsoft.Resources/deployments/', variables('solaceWorkspaceName'))]"
       ],
       "properties": {
@@ -648,7 +648,7 @@
         "count": "[variables('numberOfInstances')]"
       },
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelForVmIp'), copyindex(), '/extensions/', variables('vmExtension'))]"
+        "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(parameters('dnsLabelForVmIp'), copyindex()), variables('vmExtension'))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
