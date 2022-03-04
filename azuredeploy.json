@@ -625,7 +625,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(parameters('dnsLabelForVmIp'), copyindex()), 'DockerExtension')]",
         "[resourceId('Microsoft.Resources/deployments/', variables('solaceWorkspaceName'))]",
-        "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')]"
+        "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
       ],
       "properties": {
         "publisher": "Microsoft.EnterpriseCloud.Monitoring",
