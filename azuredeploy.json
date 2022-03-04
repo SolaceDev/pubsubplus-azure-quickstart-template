@@ -634,7 +634,7 @@
           "workspaceId": "[if(empty(parameters('workspaceName')),  '', reference(variables('solaceWorkspaceName')).outputs.workspaceId.value)]"
         },
         "protectedSettings": {
-          "workspaceKey": "[if(empty(parameters('workspaceName')),  '', reference(variables('solaceWorkspaceName')).outputs.workspaceKey.value)]"
+          "workspaceKey": "[if(empty(parameters('workspaceName')),  '', listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2021-06-01').primarySharedKey)]"
         }
       }
     },
