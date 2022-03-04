@@ -247,8 +247,6 @@
     "updateSubnetSharedTemplateName": "update-subnet-shared-resources.json",
     "updateSubnetSharedTemplateUri": "[uri(parameters('_artifactsLocation'), concat(variables('nestedTemplatesLocation'), variables('updateSubnetSharedTemplateName'), parameters('_artifactsLocationSasToken')))]",
     "solaceWorkspaceName": "SolaceWorkspace.Template",
-    "workspaceEnabledSharedTemplateName": "workspace-enabled-shared-resources.json",
-    "workspaceEnabledSharedTemplateUri": "[uri(parameters('_artifactsLocation'), concat(variables('nestedTemplatesLocation'), variables('workspaceEnabledSharedTemplateName'), parameters('_artifactsLocationSasToken')))]",
     "scriptsLocation": "scripts/",
     "solaceInstallScriptName": "install-solace.sh",
     "solaceInstallScriptFileUri": "[uri(parameters('_artifactsLocation'), concat(variables('scriptsLocation'), variables('solaceInstallScriptName'), parameters('_artifactsLocationSasToken')))]",
@@ -298,7 +296,10 @@
     },
     "adminPasswordDir" : "/mnt/resource/secrets",
     "adminPasswordFile" : "[concat(variables('adminPasswordDir'),'/solOSpasswd')]",
-    "vmExtension" : "[if(empty(parameters('workspaceName')),'DockerExtension','OmsAgentExtension')]"
+    "vmExtension" : "[if(empty(parameters('workspaceName')),'DockerExtension','OmsAgentExtension')]",
+    "workspaceTier": "Free",
+    "containersMarketplaceName": "Containers",
+    "syslogFacilities": [ "kern", "user", "daemon", "auth", "syslog", "uucp", "authpriv", "ftp", "cron", "local0", "local1", "local2", "local3", "local4", "local5", "local6", "local7" ]
   },
   "resources": [
     {
@@ -364,25 +365,83 @@
     },
     {
       "condition": "[not(empty(parameters('workspaceName')))]",
-      "apiVersion": "2021-04-01",
-      "type": "Microsoft.Resources/deployments",
-      "name": "[variables('solaceWorkspaceName')]",
+      "apiVersion": "2021-06-01",
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "name": "[parameters('workspaceName')]",
+      "location": "[parameters('workspaceRegion')]",
       "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('workspaceEnabledSharedTemplateUri')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "workspaceName": {
-            "value": "[parameters('workspaceName')]"
-          },
-          "workspaceRegion": {
-            "value": "[parameters('workspaceRegion')]"
+        "sku": {
+          "name": "[variables('workspaceTier')]"
+        }
+      },
+      "resources": [
+        {
+          "apiVersion": "2020-08-01",
+          "type": "Microsoft.OperationalInsights/workspaces/datasources",
+          "name": "[concat(parameters('workspaceName'), '/syslogCollection')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
+          ],
+          "kind": "LinuxSyslogCollection",
+          "properties": {
+            "state": "Enabled"
           }
         }
+      ]
+    },
+    {
+      "condition": "[not(empty(parameters('workspaceName')))]",
+      "apiVersion": "2020-08-01",
+      "type": "Microsoft.OperationalInsights/workspaces/datasources",
+      "name": "[concat(parameters('workspaceName'), '/syslog', copyindex())]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
+      ],
+      "copy": {
+        "name": "SyslogFacilityLoop",
+        "count": "[length(variables('syslogFacilities'))]"
+      },
+      "kind": "LinuxSyslog",
+      "properties": {
+        "syslogName": "[variables('syslogFacilities')[copyindex()]]",
+        "syslogSeverities": [
+          {
+            "severity": "emerg"
+          },
+          {
+            "severity": "alert"
+          },
+          {
+            "severity": "crit"
+          },
+          {
+            "severity": "err"
+          },
+          {
+            "severity": "warning"
+          }
+        ]
       }
     },
+    {
+      "condition": "[not(empty(parameters('workspaceName')))]",
+      "apiVersion": "2015-11-01-preview",
+      "type": "Microsoft.OperationsManagement/solutions",
+      "name": "[concat(variables('containersMarketplaceName'), '(', parameters('workspaceName'), ')')]",
+      "location": "[parameters('workspaceRegion')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
+      ],
+      "properties": {
+        "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]"
+      },
+      "plan": {
+        "name": "[concat(variables('containersMarketplaceName'), '(', parameters('workspaceName'), ')')]",
+        "publisher": "Microsoft",
+        "product": "[concat('OMSGallery/', variables('containersMarketplaceName'))]",
+        "promotionCode": ""
+      }
+    }
     {
       "condition": "[equals(parameters('vmAndLoadbalancerExposure'),'Public')]",
       "apiVersion": "2021-05-01",
@@ -624,14 +683,14 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(parameters('dnsLabelForVmIp'), copyindex()), 'DockerExtension')]",
-        "[resourceId('Microsoft.Resources/deployments/', variables('solaceWorkspaceName'))]"
+        "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
       ],
       "properties": {
         "publisher": "Microsoft.EnterpriseCloud.Monitoring",
         "type": "OmsAgentForLinux",
         "typeHandlerVersion": "1.4",
         "settings": {
-          "workspaceId": "[if(empty(parameters('workspaceName')),  '', reference(variables('solaceWorkspaceName')).outputs.workspaceId.value)]"
+          "workspaceId": "[if(empty(parameters('workspaceName')),  '', reference(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2021-06-01').customerId]"
         },
         "protectedSettings": {
           "workspaceKey": "[if(empty(parameters('workspaceName')),  '', listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2021-06-01').primarySharedKey)]"
