@@ -631,7 +631,7 @@
         "type": "OmsAgentForLinux",
         "typeHandlerVersion": "1.4",
         "settings": {
-          "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2021-06-01').customerId]"
+          "workspaceId": "[if(empty(parameters('workspaceName')),  '', reference(variables('solaceWorkspaceName')).outputs.workspaceId.value)]"
         },
         "protectedSettings": {
           "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2021-06-01').primarySharedKey]"
