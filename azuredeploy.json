@@ -441,7 +441,7 @@
         "product": "[concat('OMSGallery/', variables('containersMarketplaceName'))]",
         "promotionCode": ""
       }
-    }
+    },
     {
       "condition": "[equals(parameters('vmAndLoadbalancerExposure'),'Public')]",
       "apiVersion": "2021-05-01",
