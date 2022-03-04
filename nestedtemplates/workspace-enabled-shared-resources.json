@@ -32,13 +32,13 @@
     "syslogFacilities": [ "kern", "user", "daemon", "auth", "syslog", "uucp", "authpriv", "ftp", "cron", "local0", "local1", "local2", "local3", "local4", "local5", "local6", "local7" ]
   },
   "outputs": {
-   "workspaceResourceId": {
-      "type": "string",
-      "value": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
-    },
-   "workspaceId": {
+    "workspaceId": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2021-06-01').customerId]"
+    },
+    "workspaceKey": {
+      "type": "string",
+      "value": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2021-06-01').primarySharedKey]"
     }
   },
   "resources": [
