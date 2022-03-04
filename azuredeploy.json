@@ -690,7 +690,7 @@
         "type": "OmsAgentForLinux",
         "typeHandlerVersion": "1.4",
         "settings": {
-          "workspaceId": "[if(empty(parameters('workspaceName')),  '', reference(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2021-06-01').customerId]"
+          "workspaceId": "[if(empty(parameters('workspaceName')),  '', reference(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2021-06-01').customerId)]"
         },
         "protectedSettings": {
           "workspaceKey": "[if(empty(parameters('workspaceName')),  '', listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2021-06-01').primarySharedKey)]"
