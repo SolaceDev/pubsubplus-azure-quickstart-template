@@ -65,4 +65,4 @@ jobs:
     - name: Delete test resource group (Cleanup)
       if: ${{ always() }}
       run: |
-        az group delete --name $TESTRESOURCEGROUPNAME --yes
+        # az group delete --name $TESTRESOURCEGROUPNAME --yes
