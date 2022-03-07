@@ -18,7 +18,7 @@
       "value": "ADMINPASSWORD"
     },
     "workspaceName": {
-      "value": ""
+      "value": "ghactionswsUNIQUEID"
     },
     "vmAndLoadbalancerExposure": {
       "value": "EXPOSURE"
