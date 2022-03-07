@@ -296,7 +296,7 @@
     "adminPasswordDir" : "/mnt/resource/secrets",
     "adminPasswordFile" : "[concat(variables('adminPasswordDir'),'/solOSpasswd')]",
     "useLogAnalytics": "[not(empty(parameters('workspaceName')))]",
-    "logAnalyticsResourceName": "[if(variables('useLogAnalytics'), parameters('workspaceName'), 'ignored']",
+    "logAnalyticsResourceName": "[if(variables('useLogAnalytics'), parameters('workspaceName'), 'ignored')]",
     "vmExtension" : "[if(variables('useLogAnalytics'),'OmsAgentExtension','DockerExtension')]",
     "workspaceTier": "Free",
     "containersMarketplaceName": "Containers",
