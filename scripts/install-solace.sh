@@ -92,6 +92,10 @@ while [ ${loop_count} != ${loop_guard} ]; do
     ((loop_count++))
     echo "`date` WARN: Tried to launch Solace but Docker in state ${docker_running}"
     sleep 5
+  elif ! docker ps | grep IMAGE; then
+    ((loop_count++))
+    echo "`date` WARN: Docker is not ready yet"
+    sleep 5
   else
     echo "`date` INFO: Docker in state ${docker_running}"
     break
