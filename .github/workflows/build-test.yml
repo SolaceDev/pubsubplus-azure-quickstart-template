@@ -51,7 +51,7 @@ jobs:
 
     - name: Test deploy with public LB option
       run: |
-        az create group --name $TESTRESOURCEGROUPNAME --location $AZURELOCATION
+        az group create --name $TESTRESOURCEGROUPNAME --location $AZURELOCATION
         echo "Creating publicly exposed cluster and waiting to become active"
         az group deployment create --name $TESTDEPLOYMENTNAME --resource-group $TESTRESOURCEGROUPNAME --template-file azuredeploy.json --parameters ci/azuredeploy.parameters.json
         az group show --name $TESTRESOURCEGROUPNAME | grep provisioningState
