@@ -51,7 +51,7 @@ jobs:
 
     - name: Test deploy with public LB option
       run: |
-        az group create --name $TESTRESOURCEGROUPNAME --location $AZURELOCATION
+        az create group --name $TESTRESOURCEGROUPNAME --location $AZURELOCATION
         echo "Creating publicly exposed cluster and waiting to become active"
         az group deployment create --name $TESTDEPLOYMENTNAME --resource-group $TESTRESOURCEGROUPNAME --template-file azuredeploy.json --parameters ci/azuredeploy.parameters.json
         az group show --name $TESTRESOURCEGROUPNAME | grep provisioningState
@@ -65,4 +65,4 @@ jobs:
     - name: Delete test resource group (Cleanup)
       if: ${{ always() }}
       run: |
-        az group delete --name $TESTRESOURCEGROUPNAME --yes
+        #az group delete --name $TESTRESOURCEGROUPNAME --yes
